@@ -36,6 +36,9 @@ dependencies {
     implementation("com.auth0:java-jwt:4.4.0")
     implementation("com.github.slugify:slugify:3.0.2")
 
+    implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.7.0")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
@@ -50,7 +53,7 @@ dependencies {
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
     testImplementation("io.mockk:mockk:1.13.5")
 
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 }
 
 kotlin {

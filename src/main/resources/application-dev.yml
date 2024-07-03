@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  mvc:
+    log-request-details: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+realworld:
+  jwt.key: w845w347fh45945ghw495gwh495hw95w485
+
+logging.level:
+  web: debug
+  sql: debug
+  org.worker996.kotlinsprintbootpd: debug
