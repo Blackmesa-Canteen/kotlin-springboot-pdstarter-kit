@@ -1,16 +1,22 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("org.springframework.boot") version "3.3.1"
     id("io.spring.dependency-management") version "1.1.5"
     kotlin("jvm") version "1.9.24"
     kotlin("plugin.spring") version "1.9.24"
+
+    id("io.gitlab.arturbosch.detekt") version "1.22.0"
+    id("org.jetbrains.kotlinx.kover") version "0.6.1"
 }
 
 group = "org.worker996"
 version = "0.0.1-SNAPSHOT"
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -20,16 +26,31 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.exposed:exposed-spring-boot-starter:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.41.1")
+    implementation("com.auth0:java-jwt:4.4.0")
+    implementation("com.github.slugify:slugify:3.0.2")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+
     runtimeOnly("org.postgresql:postgresql")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("io.kotest:kotest-runner-junit5")
+    testImplementation("io.kotest:kotest-assertions-core")
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
+    testImplementation("io.mockk:mockk:1.13.5")
+
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
 }
 
 kotlin {
@@ -40,4 +61,11 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+detekt {
+    autoCorrect = true
+    buildUponDefaultConfig = true
+    config = files("$rootDir/config/detekt/config.yml")
+    baseline = file("$rootDir/config/detekt/baseline.xml")
 }
