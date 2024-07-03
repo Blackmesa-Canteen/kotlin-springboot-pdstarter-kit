@@ -1,0 +1,9 @@
+server:
+  shutdown: graceful
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: kotlin-sprintboot-pd
+  profiles:
+    active: dev
