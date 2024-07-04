@@ -1,6 +1,8 @@
 package org.worker996.kotlinsprintbootpd.user
 
 import jakarta.persistence.*
+import org.worker996.kotlinsprintbootpd.article.ArticleEntity
+import org.worker996.kotlinsprintbootpd.comment.CommentEntity
 import java.time.Instant
 
 
@@ -30,13 +32,30 @@ data class UserEntity(
     var createdAt: Instant = Instant.now(),
 
     @Column(name = "updated_at", nullable = false)
-    var updatedAt: Instant = Instant.now()
+    var updatedAt: Instant = Instant.now(),
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_follow",
+        joinColumns = [JoinColumn(name = "follower_id")],
+        inverseJoinColumns = [JoinColumn(name = "followee_id")]
+    )
+    val followees: Set<UserEntity> = setOf(),
+
+    @ManyToMany(mappedBy = "followees")
+    val followers: Set<UserEntity> = setOf(),
+
+    @ManyToMany
+    @JoinTable(
+        name = "article_favorite",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "article_id")]
+    )
+    val favoriteArticles: Set<ArticleEntity> = setOf(),
+
+    @OneToMany(mappedBy = "author", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val comments: Set<CommentEntity> = setOf()
 ) {
-    @PrePersist
-    fun onCreate() {
-        createdAt = Instant.now()
-        updatedAt = Instant.now()
-    }
 
     @PreUpdate
     fun onUpdate() {
