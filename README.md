@@ -6,7 +6,7 @@
 ### [Demo](https://demo.realworld.io/)&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld](https://github.com/gothinkster/realworld)
 
 
-This codebase was created to demonstrate a fully fledged fullstack application built with **[YOUR_FRAMEWORK]** including CRUD operations, authentication, routing, pagination, and more.
+This codebase was created to demonstrate a fully fledged backend application built with **Kotlin + Spring Boot + JPA + SLF4J + PostgreSQL + Gradle** including CRUD operations, authentication, routing, pagination, and more.
 
 We've gone to great lengths to adhere to the **Kotlin + Spring Boot + JPA + SLF4J + PostgreSQL + Gradle** community styleguides & best practices.
 
