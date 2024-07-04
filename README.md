@@ -34,6 +34,6 @@ The business logic is modified based on [realworld-springboot-kotlin](https://gi
 - You can now access the application at http://localhost:8080/api
 - For testing:
 ```shell
-$ APIURL=http://localhost:8080/api ./api/run-api-tests.sh
+APIURL=http://localhost:8080/api ./api/run-api-tests.sh
 ```
 
