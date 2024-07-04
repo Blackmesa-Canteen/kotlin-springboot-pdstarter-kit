@@ -13,8 +13,6 @@ class CustomArticleRepositoryImpl: CustomArticleRepository {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    private val logger = org.slf4j.LoggerFactory.getLogger(CustomArticleRepositoryImpl::class.java)
-
     /**
      * This method counts the number of articles based on the provided filters.
      *
@@ -52,12 +50,6 @@ class CustomArticleRepositoryImpl: CustomArticleRepository {
             cq.where(*predicates.toTypedArray())
         }
 
-        val query = entityManager.createQuery(cq)
-
-        val hibernateQuery = query.unwrap(org.hibernate.query.Query::class.java)
-        logger.debug("Generated Query: ${hibernateQuery.queryString.toString()}")
-        logger.debug("Parameters: tag=$tag, author=$author, favorited=$favorited")
-
-        return query.singleResult
+        return entityManager.createQuery(cq).singleResult
     }
 }
