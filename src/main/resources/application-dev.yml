@@ -10,6 +10,7 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+        order_inserts: true
     show-sql: true
 
   datasource:

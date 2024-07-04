@@ -2,6 +2,7 @@ package org.worker996.kotlinsprintbootpd.util
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
+import java.sql.SQLException
 
 /**
  * throw a unauthorized exception
@@ -26,3 +27,8 @@ fun notFound(message: String? = null): Nothing =
  */
 fun unprocessable(message: String? = null): Nothing =
     throw ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, message)
+
+fun SQLException.isUniqueConstraintException(constraintName: String): Boolean {
+    // Example logic: this will depend on your specific SQL dialect and driver
+    return this.message?.contains(constraintName) == true
+}

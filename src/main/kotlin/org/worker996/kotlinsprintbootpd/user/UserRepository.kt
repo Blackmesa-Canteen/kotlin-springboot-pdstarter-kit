@@ -13,6 +13,13 @@ interface UserRepository: JpaRepository<UserEntity, String>{
 
     fun findByUsername(username: String): UserEntity?
 
+    /**
+     * Checks if a user with the provided followerId is following a user with the provided followeeId.
+     *
+     * @param followerId The ID of the follower user.
+     * @param followeeId The ID of the followee user.
+     * @return true if the follower user is following the followee user, false otherwise.
+     */
     @Query("SELECT CASE WHEN COUNT(f) > 0 THEN true ELSE false END FROM UserEntity u JOIN u.followers f WHERE u.id = :followeeId AND f.id = :followerId")
     fun isFollowed(@Param("followerId") followerId: String, @Param("followeeId") followeeId: String): Boolean
 
