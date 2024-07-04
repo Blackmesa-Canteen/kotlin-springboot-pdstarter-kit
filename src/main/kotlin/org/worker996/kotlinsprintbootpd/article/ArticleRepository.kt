@@ -9,15 +9,17 @@ import org.springframework.stereotype.Repository
 import org.worker996.kotlinsprintbootpd.tag.TagEntity
 
 @Repository
-interface ArticleRepository: JpaRepository<ArticleEntity, Long>{
-    @Query("""
+interface ArticleRepository : JpaRepository<ArticleEntity, Long>, CustomArticleRepository {
+    @Query(
+        """
         SELECT a FROM ArticleEntity a 
         LEFT JOIN a.tags t 
         LEFT JOIN a.favoritedBy f
         WHERE (:tag IS NULL OR t.name = :tag) 
         AND (:author IS NULL OR a.author.username = :author) 
         AND (:favorited IS NULL OR f.username = :favorited)
-    """)
+    """
+    )
     fun list(
         @Param("tag") tag: String?,
         @Param("author") author: String?,
@@ -25,32 +27,25 @@ interface ArticleRepository: JpaRepository<ArticleEntity, Long>{
         pageable: org.springframework.data.domain.Pageable
     ): List<ArticleEntity>
 
-    @Query("""
-        SELECT a FROM ArticleEntity a 
-        LEFT JOIN a.tags t 
-        LEFT JOIN a.favoritedBy f
-        WHERE (:tag IS NULL OR t.name = :tag) 
-        AND (:author IS NULL OR a.author.username = :author) 
-        AND (:favorited IS NULL OR f.username = :favorited)
-    """)
-    fun count(
-        @Param("tag") tag: String?,
-        @Param("author") author: String?,
-        @Param("favorited") favorited: String?
-    ): Long
-
-    @Query("""
+    @Query(
+        """
         SELECT a FROM ArticleEntity a 
         JOIN a.author.followees f 
         WHERE f.id = :userId
-    """)
-    fun listFeed(@Param("userId") userId: String, pageable: org.springframework.data.domain.Pageable): List<ArticleEntity>
+    """
+    )
+    fun listFeed(
+        @Param("userId") userId: String,
+        pageable: org.springframework.data.domain.Pageable
+    ): List<ArticleEntity>
 
-    @Query("""
+    @Query(
+        """
         SELECT COUNT(a) FROM ArticleEntity a 
         JOIN a.author.followees f 
         WHERE f.id = :userId
-    """)
+    """
+    )
     fun countFeed(@Param("userId") userId: String): Long
 
     fun findBySlug(slug: String): ArticleEntity
@@ -73,18 +68,11 @@ interface ArticleRepository: JpaRepository<ArticleEntity, Long>{
     @Query("SELECT COUNT(af) FROM article_favorite af WHERE af.article_id = :articleId", nativeQuery = true)
     fun countFavorite(@Param("articleId") articleId: Long): Long
 
-    @Query("SELECT CASE WHEN COUNT(af) > 0 THEN TRUE ELSE FALSE END FROM article_favorite af WHERE af.user_id = :userId AND af.article_id = :articleId", nativeQuery = true)
+    @Query(
+        "SELECT CASE WHEN COUNT(af) > 0 THEN TRUE ELSE FALSE END FROM article_favorite af WHERE af.user_id = :userId AND af.article_id = :articleId",
+        nativeQuery = true
+    )
     fun isFavorited(@Param("userId") userId: String?, @Param("articleId") articleId: Long): Boolean
-
-    @Modifying
-    @Transactional
-    @Query("INSERT INTO article_tag (article_id, tag_id) VALUES (:articleId, :tagId)", nativeQuery = true)
-    fun addTagToArticle(@Param("articleId") articleId: Long, @Param("tagId") tagId: Long)
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM article_tag WHERE article_id = :articleId AND tag_id = :tagId", nativeQuery = true)
-    fun removeTagFromArticle(@Param("articleId") articleId: Long, @Param("tagId") tagId: Long)
 
     @Modifying
     @Transactional

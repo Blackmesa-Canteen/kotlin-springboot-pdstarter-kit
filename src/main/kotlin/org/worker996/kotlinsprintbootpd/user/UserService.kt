@@ -1,9 +1,8 @@
 package org.worker996.kotlinsprintbootpd.user
 
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.worker996.kotlinsprintbootpd.util.*
-import java.security.spec.ECField
-import java.sql.SQLException
 
 @Service
 class UserService (private val jwt: Jwt, private val repository: UserRepository) {
@@ -39,7 +38,7 @@ class UserService (private val jwt: Jwt, private val repository: UserRepository)
                 password = encodedPwd,
                 username = payload.username,
             )))
-        } catch (e: SQLException) {
+        } catch (e: DataIntegrityViolationException) {
             when {
                 e.isUniqueConstraintException("user_email_key") -> unprocessable("Email already exists")
                 e.isUniqueConstraintException("user_username_key") -> unprocessable("Username already exists")

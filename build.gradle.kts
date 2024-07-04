@@ -46,6 +46,7 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.3.1")
+    implementation("org.springframework.boot:spring-boot-starter-logging")
 
     implementation("com.auth0:java-jwt:4.4.0")
     implementation("com.github.slugify:slugify:3.0.2")

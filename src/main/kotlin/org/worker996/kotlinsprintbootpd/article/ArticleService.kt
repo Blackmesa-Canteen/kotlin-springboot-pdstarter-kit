@@ -2,20 +2,21 @@ package org.worker996.kotlinsprintbootpd.article
 
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import org.worker996.kotlinsprintbootpd.tag.TagEntity
 import org.worker996.kotlinsprintbootpd.tag.TagService
 import org.worker996.kotlinsprintbootpd.user.UserRepository
 import org.worker996.kotlinsprintbootpd.util.forbidden
-import org.worker996.kotlinsprintbootpd.util.isUniqueConstraintException
 import org.worker996.kotlinsprintbootpd.util.slugify
 import org.worker996.kotlinsprintbootpd.web.PageParams
-import java.sql.SQLException
+import org.slf4j.Logger
+import org.springframework.dao.DataIntegrityViolationException
+import org.worker996.kotlinsprintbootpd.util.isUniqueConstraintException
 
 @Service
 class ArticleService(
     private val repository: ArticleRepository,
     private val userRepository: UserRepository,
     private val tagService: TagService,
+    private val logger: Logger,
 ) {
 
     /**
@@ -48,7 +49,7 @@ class ArticleService(
      * @return The total count of articles matching the provided criteria.
      */
     fun countArticle(tag: String?, author: String?, favorited: String?): Long {
-        return repository.count(tag, author, favorited)
+        return repository.countArticles(tag, author, favorited)
     }
 
     /**
@@ -175,13 +176,9 @@ class ArticleService(
                     tags = tags.toSet()
                 )
             )
-
-            // add tags articles relationship
-            tags.map { it.id }.forEach {
-                repository.addTagToArticle(article.id, it)
-            }
             toModel(userId, article)
-        } catch (e: SQLException) {
+        } catch (e: DataIntegrityViolationException) {
+            logger.error("Failed to create article, exception message: ${e.message}")
             when {
                 // if the slug is not unique, try again with a different suffix
                 e.isUniqueConstraintException("article_slug_key") -> doCreateArticle(userId, payload, true)
@@ -198,7 +195,6 @@ class ArticleService(
      * @param payload The article update request object containing the updated article data.
      * @param slugSuffix Determines whether to add a random suffix to the slug. Defaults to false.
      * @return The updated article as an ArticleModel object.
-     * @throws SQLException If there is an error performing the database operation.
      */
     private fun doUpdateArticle(
         userId: String,
@@ -219,7 +215,7 @@ class ArticleService(
             )
         )
         toModel(userId, article)
-    } catch (e: SQLException) {
+    } catch (e: DataIntegrityViolationException) {
         when {
             // if the slug is not unique, try again with a different suffix
             e.isUniqueConstraintException("article_slug_key") -> doUpdateArticle(userId, slug, payload, true)

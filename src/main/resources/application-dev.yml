@@ -37,3 +37,4 @@ logging.level:
   web: debug
   sql: debug
   org.worker996.kotlinsprintbootpd: debug
+  root: info

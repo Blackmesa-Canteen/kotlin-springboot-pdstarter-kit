@@ -37,7 +37,7 @@ class ArticleController(
             favorited = favorited,
             pageParams = request.pageParams()
         )
-        val count = service.countArticle(tag = null, favorited = null, author = userId)
+        val count = service.countArticle(tag = tag, favorited = favorited, author = author)
         return ok().body(ArticlesResponse(articles, count))
     }
 
