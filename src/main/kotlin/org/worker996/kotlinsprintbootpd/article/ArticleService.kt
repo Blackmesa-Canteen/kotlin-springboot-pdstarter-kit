@@ -178,7 +178,7 @@ class ArticleService(
 
             // add tags articles relationship
             tags.map { it.id }.forEach {
-                repository.addTagToArticle(article.id, it!!)
+                repository.addTagToArticle(article.id, it)
             }
             toModel(userId, article)
         } catch (e: SQLException) {

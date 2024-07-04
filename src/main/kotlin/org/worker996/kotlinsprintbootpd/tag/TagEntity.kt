@@ -10,7 +10,7 @@ class TagEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    val id: Long? = null,
+    val id: Long = 0,
 
     @Column(name = "name", nullable = false, unique = true)
     val name: String,
