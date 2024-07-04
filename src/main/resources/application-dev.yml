@@ -5,6 +5,20 @@ spring:
   mvc:
     log-request-details: true
 
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    show-sql: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/realworld
+    username: postgres
+    password: postgres
+
+
 management:
   endpoints:
     web:
@@ -14,8 +28,9 @@ management:
     health:
       show-details: always
 
-realworld:
-  jwt.key: w845w347fh45945ghw495gwh495hw95w485
+pd:
+  jwt:
+    secret: w845w347fh45945ghw495gwh495hw95w485
 
 logging.level:
   web: debug
