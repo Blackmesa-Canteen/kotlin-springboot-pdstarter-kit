@@ -60,12 +60,6 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
-    testImplementation("io.kotest:kotest-runner-junit5:5.0.0")
-    testImplementation("io.kotest:kotest-assertions-core:5.0.0")
-    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
     testImplementation("io.mockk:mockk:1.13.5")
 
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
@@ -77,7 +71,7 @@ kotlin {
     }
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 

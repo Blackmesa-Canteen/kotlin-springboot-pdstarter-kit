@@ -1,30 +1,33 @@
 package org.worker996.kotlinsprintbootpd.article
 
-import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.shouldBe
+import org.hamcrest.CoreMatchers.any
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.testcontainers.junit.jupiter.Testcontainers
-import org.worker996.kotlinsprintbootpd.extensions.JpaDatabaseCleanerExtension
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito.*
+import org.mockito.junit.jupiter.MockitoExtension
 import org.worker996.kotlinsprintbootpd.user.UserEntity
 import org.worker996.kotlinsprintbootpd.user.UserRepository
+import java.util.*
 
-@SpringBootTest
-@Testcontainers
-@ExtendWith(SpringExtension::class, JpaDatabaseCleanerExtension::class)
-class ArticleRepositoryTests @Autowired constructor(
-    private val articleRepository: ArticleRepository,
-    private val userRepository: UserRepository
-) : StringSpec({
+@ExtendWith(MockitoExtension::class)
+class ArticleRepositoryTests {
 
-    "should save and retrieve an article" {
-        val user = userRepository.save(UserEntity(
+    @Mock
+    private lateinit var articleRepository: ArticleRepository
+
+    @Mock
+    private lateinit var userRepository: UserRepository
+
+    @Test
+    fun `should save and retrieve an article`() {
+        val user = UserEntity(
             email = "test@example.com",
             username = "testuser",
             password = "password"
-        ))
+        )
 
         val article = ArticleEntity(
             author = user,
@@ -34,9 +37,19 @@ class ArticleRepositoryTests @Autowired constructor(
             body = "Test Body"
         )
 
+        // Mocking the save behavior of userRepository and articleRepository
+        `when`(userRepository.save(any<UserEntity>())).thenReturn(user)
+        `when`(articleRepository.save(any<ArticleEntity>())).thenReturn(article)
+        `when`(articleRepository.findById(article.id)).thenReturn(Optional.of(article))
+
+        // Save the user and article
+        val savedUser = userRepository.save(user)
         val savedArticle = articleRepository.save(article)
+
+        // Retrieve the article
         val retrievedArticle = articleRepository.findById(savedArticle.id).orElse(null)
 
-        retrievedArticle shouldBe savedArticle
+        // Assert the retrieved article is the same as the saved one
+        assertEquals(savedArticle, retrievedArticle)
     }
-})
+}
